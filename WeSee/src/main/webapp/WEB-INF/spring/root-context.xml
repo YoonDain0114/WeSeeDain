@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<bean id = "dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
+		<property name="username" value="bigdata01" />
+		<property name="password" value="bigdata01" />
+	</bean>
+	
+	<bean id="sqlSessionFactory"
+			class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="typeAliasesPackage" value="com.ezen.WeSee.dto"/>
+		<!-- typeAliases는 mybatis에서 프로그램단에서 작성한 객체를 사용하기 위한 선언이다.
+			간단하게 말하면 dto를 넣겠다는 것.
+		 		value의 경로에 있는 파일들을 객체로 사용하겠다는 의미이다.-->
+		<property name="mapperLocations" value="classpath:com/ezen/WeSee/model/*.xml"/>
+		<!-- mapper.xml은 DB를 사용하기 위한 정보와 쿼리문들을 선언한 파일이다. 
+				value 위치에 존재하는 모든 xml파일을 mapper로 사용한다. -->		
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	 
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="73400320"/>
+	</bean>	
+   
+   <bean id="uploadPath" class="java.lang.String">
+      <constructor-arg value="C:/dain/study3/WeSee/src/main/webapp/resources/images" />
+   </bean>
+   
+   <!-- navermail설정 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+	 <property name="host" value="smtp.naver.com"/> <!-- 메이서버 호스트 -->
+	 <property name="port" value="587"/> <!-- 메이서버 포트번호 -->
+	 <property name="username" value="ydi1702@naver.com"/> <!-- 자신의 이메일 아이디 -->
+	 <property name="password" value="aaaaaaaa"/> <!-- 자신의 비밀번호 -->
+	   <!-- 보안연결 SSL과 관련된 설정 -->
+	 <property name="javaMailProperties">
+	  <props>
+	  <prop key="mail.smtp.auth">true</prop>
+	  <prop key="mail.smtp.starttls.enable">true</prop>
+	  <prop key="mail.smtps.checkserveridentity">true</prop>
+	  <prop key="mail.smtps.ssl.trust">*</prop>
+	  <prop key="mail.debug">true</prop>
+	  <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+	  <prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+	  </props>
+	 </property>
+	</bean>
+	
+</beans>

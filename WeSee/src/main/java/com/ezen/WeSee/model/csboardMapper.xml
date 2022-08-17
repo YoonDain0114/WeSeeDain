@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.ezen.WeSee.model.csboardMapper">
+	<select id="listCsBoard" parameterType="java.util.Map" resultType="csboardDTO">
+		select * from (select rownum rn, A.* from 
+					(select * from we_csboard order by csboardnum desc)A)
+					where rn between '${start}' and '${end}'
+	</select>
+	
+	<insert id="insertCsBoard" parameterType="csboardDTO">
+		insert into we_csboard values(we_csboard_seq.nextval, #{csoption},#{csboardtitle},#{csboardname},sysdate,#{csboardcontents},#{csimage},#{secret},#{recomment})
+	</insert>
+	
+	<select id="getCsBoard" parameterType="int" resultType="csboardDTO">
+		select * from we_csboard where csboardnum = #{csboardnum}
+	</select>
+	
+	<select id="getMembername" parameterType="String" resultType="memberDTO">
+		select * from we_member where name=#{name}
+	</select>
+	
+	<delete id="deleteCsBoard" parameterType="int">
+		delete from we_csboard where csboardnum = #{csboardnum}
+	</delete>
+	
+	<select id="searchCsBoard" parameterType="java.util.Map" resultType="csboardDTO">
+		select * from we_csboard where csoption= '${search}' and csboardtitle like '%${searchString}%'
+	</select>
+	
+	<select id="getCsBoardCount" parameterType="java.util.Map" resultType="int">
+		select count(*) from we_csboard
+	</select>
+	
+	
+	<insert id="insertCommentCsBoard" parameterType="commentDTO">
+	insert into recomment values(recomment_seq.nextval,#{bno},#{content},#{writer},sysdate)
+	</insert>
+	
+	
+	<delete id="deleteCommentCsBoard" parameterType="int">
+		delete from recomment where cno = #{cno}
+	</delete>
+	
+	<select id="listCommentCsBoard" parameterType="int" resultType="commentDTO">
+		select * from recomment where bno=#{bno} order by cno desc
+	</select>
+	
+	<select id="getCommentCsBoard" parameterType="int" resultType="commentDTO">
+		select * from recomment where cno = #{cno}
+	</select>
+	
+	<update id="updateComment" parameterType="int">
+		update we_csboard set recomment=recomment+1 where csboardnum=#{csboardnum}
+	</update>
+	
+	<update id="MupdateComment" parameterType="int">
+		update we_csboard set recomment=recomment-1 where csboardnum=#{csboardnum}
+	</update>
+	
+	<delete id="deleteAllComment" parameterType="int">
+		delete from recomment where bno=#{bno}
+	</delete>
+	
+	
+</mapper>
+ 

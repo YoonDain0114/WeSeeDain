@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+<mapper namespace="com.ezen.WeSee.model.GoodsMapper">
+	<select id="getGoods" parameterType="int" resultType="goodsDTO">
+		select * from we_goods where gnum = #{gnum}
+	</select>
+	
+	<insert	id="insertOrderlist" parameterType="Map">
+		insert into we_orderlist values(we_orderlist_seq.nextval, #{ordermember, jdbcType=INTEGER}, #{ordergoods, jdbcType=VARCHAR}, #{stage, jdbcType=INTEGER}, #{memo, jdbcType=VARCHAR}, #{payment, jdbcType=VARCHAR}, #{totalpay, jdbcType=INTEGER}, #{orderdate, jdbcType=VARCHAR}, '', #{orderaddress, jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="getOrderNum" parameterType="Map" resultType="int">
+		select ordernum from we_orderlist where ordergoods = #{ordergoods} and orderdate = #{orderdate} and ordermember = #{ordermember}
+	</select>	
+	
+	<select id="getOrderlist" parameterType="int" resultType="orderlistDTO">
+		select * from we_orderlist where ordermember = #{ordermember}
+	</select>
+	
+	<update id="insertOrdercode" parameterType="Map">
+		update we_orderlist set ordercode = #{ordercode} where ordernum = #{ordernum}
+	</update> 
+	
+		
+	
+	
+	<!-- 위 : 김형준 || 아래 : 이아린 -->
+		
+	
+	
+	<select id = "cateList" parameterType = "String" resultType="GoodsDTO">
+		select * from we_goods where gcategory = #{gcategory}
+	</select>
+	
+	
+	
+	<!-- 위 : 이아린 || 아래 : 윤다인 -->
+		
+	
+	<!-- 
+	<select id="getGoods" resultType="goodsDTO" parameterType="int">
+		select * from we_goods where gnum = #{gnum}
+	</select>
+	 -->
+	<select id="selectBySpec" parameterType="String" resultType="goodsDTO"> 
+		select * from we_goods where gspec = #{gspec} 
+	</select>
+	
+	<select id="findByName" parameterType="String" resultType="goodsDTO"> 
+		select * from we_goods where gname like '%${search}%' 
+	</select>
+	
+	<delete id="deleteMemberOrder" parameterType="int">
+		delete from we_orderlist where ordermember = #{ordermember}
+	</delete>
+	
+	<update id="M_updategqty" parameterType="map">
+      update we_goods set gqty = gqty-#{gqty} where gnum=#{gnum}
+   </update>
+	
+	
+	<!-- 위 : 윤다인 || 아래 : 김동완 -->
+	
+	
+	
+	<update id="updategoodsWish" parameterType="map">
+		update we_member set goodswish = #{goodswish} where membernum=#{membernum} 
+	</update>
+	
+	
+	
+	
+	<!-- 위 : 김동완 || 아래 : 이시율 -->
+	
+	
+	
+	
+	<select id="getOrder" parameterType="int" resultType="orderlistDTO">
+		select * from we_orderlist where ordernum = #{ordernum}
+	</select>
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+<mapper namespace="com.ezen.WeSee.model.MovieMapper">
+	<update id="updateMember" parameterType="memberDTO">
+		update we_member set passwd=#{passwd}, birth=#{birth}, hp1=#{hp1}, hp2=#{hp2}, hp3=#{hp3}, address=#{address}, memberimage=#{memberimage} where membernum=#{membernum} 
+	</update>
+	
+	<select id="getMovie" parameterType="int" resultType="movieDTO">
+		select * from we_movie where movienum = #{movienum}
+	</select>
+	
+	<update id="updateFe" parameterType="memberDTO">
+		update we_member set fe = #{fe}, autopay=#{autopay}, paydate=#{paydate} where membernum=#{membernum} 
+	</update>
+	
+	<update id="updateOnlyFe" parameterType="memberDTO">
+		update we_member set fe = #{fe}, autopay=#{autopay} where membernum=#{membernum} 
+	</update>
+	
+	<update id="stopFe" parameterType="memberDTO">
+		update we_member set autopay=#{autopay} where membernum=#{membernum} 
+	</update>
+	
+	<delete id="deleteMember" parameterType="int">
+		delete from we_member where membernum=#{membernum}
+	</delete>
+	
+	<update id="updateWish" parameterType="map">
+		update we_member set wish = #{wish} where membernum=#{membernum} 
+	</update>
+	
+	<update id="updateWatch" parameterType="map">
+		update we_member set watch = #{watch} where membernum=#{membernum} 
+	</update>
+	
+	<update id="paydateOver" parameterType="memberDTO">
+		update we_member set fe=#{fe}, autopay=#{autopay}, paydate=#{paydate} where membernum=#{membernum} 
+	</update>
+	
+	<update id="paydateRenew" parameterType="memberDTO">
+		update we_member set paydate=#{paydate} where membernum=#{membernum}
+	</update>
+	
+	<update id="plusViewcount" parameterType="int">
+		update we_movie set viewcount = viewcount+1 where movienum=#{movienum}
+	</update>
+	
+	
+	
+	<!-- 위 : 김형준 || 아래 : 이아린 -->
+	
+	
+	
+	<select id ="findMovieList" parameterType="String" resultType="movieDTO">
+		select * from we_movie where title like #{title}
+	</select>
+	
+	<select id="recMovie" resultType="MovieDTO">
+		<![CDATA[select * from (select * from we_movie order by viewcount desc) where rownum <= 7]]>
+	</select>
+
+	<select id="yearlyMovie" resultType = "MovieDTO">
+		<![CDATA[select *from (select * from we_movie order by opendate desc) where rownum <11]]>
+	</select>
+	
+	
+	
+	<!-- 위 : 이아린 || 아래 : 김민 -->
+	
+	
+	
+	<select id = "listMovie" resultType="movieDTO">
+		select * from we_movie 
+	</select>
+	<!-- 
+	<select id = "getMovie" resultType = "movieDTO" parameterType = "int">
+		select * from we_movie where movienum = #{movienum}
+	</select>
+	 -->
+	 
+	<select id = "selectByGenre" resultType = "movieDTO" parameterType = "String">
+		select * from we_movie where genre like #{genre}
+	</select>
+	
+	<select id = "selectByTitle" resultType = "movieDTO" parameterType = "String">
+		select * from we_movie where title like #{getTitle}
+	</select>
+	 
+	<select id = "searchgenre" resultType = "movieDTO" parameterType = "String">
+		select * from we_movie where (#{genre} is null or genre like '%' || #{genre}|| '%')
+	</select>
+	
+	<select id = "searchtitle" resultType = "movieDTO" parameterType = "String">
+        select * from we_movie where (#{title} is null or title like '%' || #{title} || '%')
+    </select>
+	
+	
+	
+	<!-- 위 : 김민 || 아래 : 김동완 -->
+	
+	
+	
+	<!-- 장르 조건검색  -->
+	<select id = "sameGenre" resultType = "movieDTO" parameterType = "String">
+		select * from we_movie where genre like'%'||#{genre}||'%'
+	</select>
+</mapper>

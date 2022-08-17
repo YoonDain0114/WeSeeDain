@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+<mapper namespace="com.ezen.WeSee.model.AdminMapper">
+	<select id="IdPwCheck" parameterType="String" resultType="memberDTO">
+		select * from we_member where email = #{email}
+	</select>
+	
+	<insert id="newMember" parameterType="memberDTO">
+		insert into we_member values(we_member_seq.nextVal, #{birth}, #{rate}, #{name}, #{hp1}, #{hp2}, #{hp3}, #{email}, #{passwd}, #{address}, #{memberimage}, '', '', 0, '', '', 2, '')
+	</insert>
+	
+	<select id="getMember" parameterType="int" resultType="memberDTO">
+		select * from we_member where membernum = #{membernum}
+	</select>
+	
+	<select id="searchMemberEmail" parameterType="memberDTO" resultType="memberDTO">
+		select * from we_member where name = #{name} and hp1 = #{hp1} and hp2 = #{hp2} and hp3 = #{hp3} and birth = #{birth}
+	</select>
+	
+	<select id="searchMemberPasswd" parameterType="memberDTO" resultType="memberDTO">
+		select * from we_member where name = #{name} and hp1 = #{hp1} and hp2 = #{hp2} and hp3 = #{hp3} and email = #{email} and birth = #{birth}
+	</select>
+	
+	<select id="checkEmail" parameterType="String" resultType="memberDTO">
+		select * from we_member where email = #{email}
+	</select>
+	
+	<update id="changePasswd" parameterType="String">
+		update we_member set passwd=#{passwd} where email=#{email}
+	</update>
+	
+	
+	
+	<!-- 위 : 김형준 || 아래 : 김한슬 -->
+	
+	
+	<!-- 
+	영상리스트
+	<select id="listMovie" resultType="MovieDTO">
+		select * from we_Movie
+	</select>
+	 -->
+	 
+	 <select id="listAdmin" resultType="movieDTO">
+		select * from (select rownum rn, A.* from (select * from we_movie order by movienum desc)A) where rn between #{start} and #{end}
+	</select>
+	
+	<!-- 영상 입력을 위해 컬럼들 입력 -->
+	<insert id="insertMovie" parameterType="MovieDTO">
+		insert into we_Movie(MOVIENUM, OPENDATE, TITLE, IMAGE, DIRECTOR, ACTOR, TIMES, AGE, MOVIECONTENTS, MOVIEFILE, GENRE, VIEWCOUNT, VIDEOFILE, VIDEOFILE2, VIDEOFILE3)
+		values(we_movie_seq.nextval, #{opendate, jdbcType=VARCHAR}, #{title, jdbcType=VARCHAR}, #{image, jdbcType=VARCHAR }, #{director, jdbcType=VARCHAR}, #{actor, jdbcType=VARCHAR}, #{times, jdbcType=INTEGER }, #{age, jdbcType=INTEGER }, #{moviecontents, jdbcType=VARCHAR}, #{moviefile, jdbcType=VARCHAR }, #{genre, jdbcType=VARCHAR}, 0, #{videofile, jdbcType=VARCHAR}, #{videofile2, jdbcType=VARCHAR}, #{videofile3, jdbcType=VARCHAR})
+	</insert>
+	
+	
+	<!-- 영상 삭제 movienum값을 받아 체크 -->
+	<delete id="deleteMovie" parameterType="int">
+		delete from we_Movie where movienum = #{movienum}
+	</delete>
+	
+	<!-- 
+	movienum을 통해 입력한 값을 꺼내준다
+	<select id="getMovie" resultType="MovieDTO" parameterType="int">
+		select * from we_Movie where movienum = #{movienum}
+	</select>
+ 	-->
+	<!-- movienum을 통해 입력한 값을 받고 수정해주기 -->
+	<update id="updateMovie" parameterType="MovieDTO">
+		update we_Movie set title=#{title}, opendate=#{opendate}, image=#{image}, director=#{director}, actor=#{actor}, times=#{times}, age=#{age}, moviecontents=#{moviecontents}, moviefile=#{moviefile}, genre=#{genre} where movienum=#{movienum}
+	</update>
+	
+	<select id="getAdminlistCount" parameterType="java.util.Map" resultType="int">
+		select count(*) from we_movie 
+		where 1=1
+		<if test="title != null and title != '' ">
+		and title like '%' || #{title} || '%'
+		</if>
+	</select>
+	
+	<!-- 
+	영화 제목으로 찾기
+	<select id="findMovie" parameterType="String" resultType="MovieDTO">
+		select * from we_movie where lower(title) like #{title}
+	</select>
+	 -->
+
+	<select id="adminFindGoods" parameterType="java.util.Map" resultType="GoodsDTO">
+	 	select * from (select rownum rn, A.* from(select * from we_goods 
+	 	where 1=1
+	 	<if test="gname != null and gname !='' ">
+	 	and gname like '%' || #{gname} || '%' 
+	 	</if>
+	 	order by gnum desc
+	 	)A) where rn  between #{start} and #{end}
+	 </select>
+ 	
+	<select id="listGoodsPage" parameterType="java.util.Map" resultType="GoodsDTO">
+		select * from (select rownum rn, A.* from (select * from we_goods order by gnum desc)A) where rn between #{start} and #{end}
+	</select>
+ 	
+	<!-- 등록된 굿즈갯수알아보기 -->
+	<select id="getGoodslistCount" parameterType="java.util.Map" resultType="int">
+		select count(*) from we_goods
+		where 1=1
+		<if test="gname !=null and gname != '' ">
+		and gname like '%' || #{gname} || '%'
+		</if>
+	</select>
+	
+		
+	<select id ="findMovie" parameterType="java.util.Map" resultType="movieDTO">
+		select * from (select rownum rn, A.* from (select * from we_movie
+		 where 1=1
+		 <if test="title != null and title != '' ">
+		 and title like '%' || #{title} || '%'
+		 </if>
+		 order by movienum desc
+		 )A) where rn between #{start} and #{end}
+	</select>
+	
+	
+	
+	<!-- 위 : 김한슬 || 아래 : 이아린 -->
+	
+	
+	
+	<select id="listGoods" resultType="GoodsDTO">
+ 		select * from we_goods
+ 	</select>
+ 	
+ 	<insert id="insertGoods" parameterType="GoodsDTO">
+ 		insert into we_goods values(we_goods_seq.nextval, #{gname}, #{gimage}, #{gprice}, #{gqty}, #{gmovie}, #{gcategory}, #{gspec}, #{gcontents},  #{gimage2}, #{gimage3}, #{gimage4}, #{gimage5}) 
+ 	</insert>
+ 	
+ 	<select id="getAGoods" parameterType="int" resultType="GoodsDTO">
+ 		select * from we_goods where gnum=#{gnum}
+ 	</select>
+ 	
+ 	<update id="updateGoods" parameterType="GoodsDTO">
+ 		update we_goods set gname=#{gname}, gimage=#{gimage}, gprice=#{gprice}, gqty=#{gqty}, gmovie=#{gmovie}, gcategory=#{gcategory}, gspec=#{gspec}, gcontents=#{gcontents}, gimage2=#{gimage2}, gimage3=#{gimage3}, gimage4=#{gimage4}, gimage5=#{gimage5}, where gnum=#{gnum}
+ 	</update>
+ 	
+ 	<delete id="deleteGoods" parameterType="int">
+ 		delete from we_goods where gnum=#{gnum}
+ 	</delete>
+ 	
+ 	
+ 	
+ 	 	<!--  위 : 이아린 || 아래 : 윤다인  -->
+ 	 	
+ 	 	
+ 	
+	<!--  총매출 관련한 매퍼  -->
+   <select id="totalSalelist" parameterType="java.util.Map" resultType="orderlistDTO">
+      select * from (select rownum rn, A.* from (select * from we_orderlist order by ordernum desc)A) where rn between '${start}' and '${end}' 
+   </select>
+   
+   <select id="totalSum" resultType="int"> 
+      select sum(totalpay) from we_orderlist 
+   </select>
+   
+   <select id="totalSalelistCount" parameterType="java.util.Map" resultType="int"> 
+      select count(*) from we_orderlist 
+   </select>
+   
+   <!--  연매출에 관련한 매퍼  -->
+   <select id="yearSaleCount" parameterType="java.util.Map" resultType="int">
+       select count(case when substr(orderdate,1,4)='${searchString}' then 1 end) from we_orderlist 
+    </select>
+    
+   <select id="searchYear" parameterType="java.util.Map" resultType="orderlistDTO"> 
+      select * from (select rownum rn, A.* from (select * from we_orderlist where substr(orderdate,1,4)= '${searchString}' order by ordernum desc)A) where rn between '${start}' and '${end}' 
+   </select>
+   
+   <select id="YearSum" parameterType="java.util.Map" resultType="String"> 
+      select sum(totalpay) as sale from we_orderlist where substr(orderdate,1,4) = '${searchString}' order by sale desc 
+   </select>
+   
+   <!--  일매출에 관련한 매퍼  -->
+   <select id="daySaleCount" parameterType="java.util.Map" resultType="int"> 
+      select count (case when substr(orderdate,1,10)='${date}' then 1 end) from we_orderlist 
+   </select>
+   
+   <select id="searchDay" parameterType="java.util.Map" resultType="orderlistDTO"> 
+      select * from (select rownum rn, A.* from (select * from we_orderlist where substr(orderdate,1,10)='${date}' order by ordernum desc)A) where rn between '${start}' and '${end}'  
+   </select>
+   
+   <select id="DaySum" parameterType="java.util.Map" resultType="String"> 
+      select sum(totalpay) as sale from we_orderlist where substr(orderdate,1,10) = '${date}' order by sale desc 
+   </select>
+
+   <!--  월매출에 관련한 매퍼  -->
+   <select id="monthSaleCount" parameterType="java.util.Map" resultType="int"> 
+      select count (case when substr(orderdate,1,4)='${year}' and substr(orderdate,6,2)='${month}' then 1 end) from we_orderlist 
+   </select>
+   
+   <select id="searchMonth" parameterType="java.util.Map" resultType="orderlistDTO"> 
+      select * from (select rownum rn, A.* from (select * from we_orderlist where substr(orderdate,1,4)='${year}' and substr(orderdate,6,2)='${month}' order by ordernum desc)A) where rn between '${start}' and '${end}' 
+   </select>
+   
+   <select id="MonthSum" parameterType="java.util.Map" resultType="String"> 
+      select sum(totalpay) as sale from we_orderlist where substr(orderdate,1,4)='${year}' and substr(orderdate,6,2)='${month}' order by sale desc 
+   </select>
+</mapper>
